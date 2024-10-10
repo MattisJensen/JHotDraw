@@ -98,68 +98,73 @@ public class OpenFileAction extends AbstractApplicationAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         final Application app = getApplication();
-        if (app.isEnabled()) {
-            app.setEnabled(false);
-            // Search for an empty view
-            View emptyView = app.getActiveView();
-            if (emptyView == null
-                    || !emptyView.isEmpty()
-                    || !emptyView.isEnabled()) {
-                emptyView = null;
-            }
-            final View view;
-            boolean disposeView;
-            if (emptyView == null) {
-                view = app.createView();
-                app.add(view);
-                disposeView = true;
-            } else {
-                view = emptyView;
-                disposeView = false;
-            }
-            URIChooser chooser = getChooser(view);
-            chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-            if (showDialog(chooser, app.getComponent()) == JFileChooser.APPROVE_OPTION) {
-                app.show(view);
-                URI uri = chooser.getSelectedURI();
-                // Prevent same URI from being opened more than once
-                if (!getApplication().getModel().isAllowMultipleViewsPerURI()) {
-                    for (View v : getApplication().getViews()) {
-                        if (v.getURI() != null && v.getURI().equals(uri)) {
-                            v.getComponent().requestFocus();
-                            if (disposeView) {
-                                app.dispose(view);
-                            }
-                            app.setEnabled(true);
-                            return;
-                        }
-                    }
-                }
-                openViewFromURI(view, uri, chooser);
-            } else {
-                if (disposeView) {
-                    app.dispose(view);
-                }
-                app.setEnabled(true);
-            }
+        if (!app.isEnabled()) {
+            return;
         }
+        app.setEnabled(false); // "Lock" the application (for multi-threading purposes)
+
+        View view = findOrCreateEmptyView(app); // Find (or create) an empty view in which to open the file.
+        boolean disposeView = (view == null);
+
+        if (disposeView) {
+            view = app.createView();
+            app.add(view);
+        }
+
+        if (!handleFileChoice(view, app, disposeView) && disposeView) {
+            app.dispose(view);
+        }
+
+        app.setEnabled(true); // "Unlock" the application
     }
 
-    protected void openViewFromURI(final View view, final URI uri, final URIChooser chooser) {
+    /*
+        Opens a JFileChooser dialog, for the user to choose which file to open. If action is canceled, and the view 
+        is null, it is disposed.
+     */
+    private boolean handleFileChoice(View view, Application app, boolean disposeView) {
+        URIChooser chooser = getChooser(view);
+        chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+
+        boolean fileApproved = showDialog(chooser, app.getComponent()) == JFileChooser.APPROVE_OPTION;
+        if (fileApproved) {
+            app.show(view);
+            URI uri = chooser.getSelectedURI();
+            // If having the same URI opened more than once is not allowed, change focus to the already opened one.
+            if (!getApplication().getModel().isAllowMultipleViewsPerURI()) {
+                for (View v : getApplication().getViews()) {
+                    if (v.getURI() != null && v.getURI().equals(uri)) {
+                        v.getComponent().requestFocus();
+                        if (disposeView) app.dispose(view);
+                    }
+                }
+            }
+            openViewFromURI(view, uri, chooser);
+        }
+        return fileApproved;
+    }
+
+    private static View findOrCreateEmptyView(Application app) {
+        View emptyView = app.getActiveView();
+        if (!emptyView.isEmpty() || !emptyView.isEnabled()) {
+            emptyView = null;
+        }
+        return emptyView;
+    }
+
+    protected void openViewFromURI(final View view, final URI uri, final URIChooser chooser) { // TODO: Make shorter - by extracting anonymous SwingWorker, maybe?
         final Application app = getApplication();
         app.setEnabled(true);
         view.setEnabled(false);
-        // If there is another view with the same URI we set the multiple open
-        // id of our view to max(multiple open id) + 1.
+        // If there is another view with the same URI we set the multiple open id of our view to max(multiple open id) + 1.
         int multipleOpenId = 1;
         for (View aView : app.views()) {
-            if (aView != view
-                    && aView.isEmpty()) {
+            if (aView != view && aView.isEmpty()) {
                 multipleOpenId = Math.max(multipleOpenId, aView.getMultipleOpenId() + 1);
             }
         }
         view.setMultipleOpenId(multipleOpenId);
-        view.setEnabled(false);
+
         // Open the file
         new SwingWorker() {
             @Override
@@ -213,6 +218,7 @@ public class OpenFileAction extends AbstractApplicationAction {
                         JOptionPane.ERROR_MESSAGE);
             }
         }.execute();
+        view.setEnabled(true);
     }
 
     /**
