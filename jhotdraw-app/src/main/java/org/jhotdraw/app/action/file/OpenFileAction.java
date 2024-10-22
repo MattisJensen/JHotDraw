@@ -152,18 +152,12 @@ public class OpenFileAction extends AbstractApplicationAction {
         return emptyView;
     }
 
-    protected void openViewFromURI(final View view, final URI uri, final URIChooser chooser) { // TODO: Make shorter - by extracting anonymous SwingWorker, maybe?
+    protected void openViewFromURI(final View view, final URI uri, final URIChooser chooser) {
         final Application app = getApplication();
         app.setEnabled(true);
         view.setEnabled(false);
         // If there is another view with the same URI we set the multiple open id of our view to max(multiple open id) + 1.
-        int multipleOpenId = 1;
-        for (View aView : app.views()) {
-            if (aView != view && aView.isEmpty()) {
-                multipleOpenId = Math.max(multipleOpenId, aView.getMultipleOpenId() + 1);
-            }
-        }
-        view.setMultipleOpenId(multipleOpenId);
+        setMultipleOpenId(view, app);
 
         // Open the file
         new SwingWorker() {
@@ -219,6 +213,16 @@ public class OpenFileAction extends AbstractApplicationAction {
             }
         }.execute();
         view.setEnabled(true);
+    }
+
+    private static void setMultipleOpenId(View view, Application app) {
+        int multipleOpenId = 1;
+        for (View aView : app.views()) {
+            if (aView != view && aView.isEmpty()) {
+                multipleOpenId = Math.max(multipleOpenId, aView.getMultipleOpenId() + 1);
+            }
+        }
+        view.setMultipleOpenId(multipleOpenId);
     }
 
     /**
