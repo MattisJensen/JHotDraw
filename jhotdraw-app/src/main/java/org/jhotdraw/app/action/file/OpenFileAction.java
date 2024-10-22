@@ -215,7 +215,7 @@ public class OpenFileAction extends AbstractApplicationAction {
         view.setEnabled(true);
     }
 
-    private static void setMultipleOpenId(View view, Application app) {
+    protected static void setMultipleOpenId(View view, Application app) {
         int multipleOpenId = 1;
         for (View aView : app.views()) {
             if (aView != view && aView.isEmpty()) {

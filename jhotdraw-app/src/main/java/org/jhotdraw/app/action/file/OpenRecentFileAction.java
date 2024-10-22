@@ -105,14 +105,7 @@ public class OpenRecentFileAction extends AbstractApplicationAction {
         app.setEnabled(true);
         // If there is another view with the same URI we set the multiple open
         // id of our view to max(multiple open id) + 1.
-        int multipleOpenId = 1;
-        for (View aView : app.views()) {
-            if (aView != view
-                    && aView.isEmpty()) {
-                multipleOpenId = Math.max(multipleOpenId, aView.getMultipleOpenId() + 1);
-            }
-        }
-        view.setMultipleOpenId(multipleOpenId);
+        OpenFileAction.setMultipleOpenId(view, app);
         view.setEnabled(false);
         // Open the file
         new SwingWorker() {
