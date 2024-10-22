@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+
 import org.jhotdraw.action.AbstractApplicationAction;
 import org.jhotdraw.api.app.Application;
 import org.jhotdraw.api.app.View;
@@ -70,34 +71,37 @@ public class OpenRecentFileAction extends AbstractApplicationAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         final Application app = getApplication();
-        if (app.isEnabled()) {
-            // Prevent same URI from being opened more than once
-            if (!getApplication().getModel().isAllowMultipleViewsPerURI()) {
-                for (View vw : getApplication().getViews()) {
-                    if (vw.getURI() != null && vw.getURI().equals(uri)) {
-                        vw.getComponent().requestFocus();
-                        return;
-                    }
+        if (!app.isEnabled()) {
+            return;
+        }
+
+        // Prevent same URI from being opened more than once
+        if (!getApplication().getModel().isAllowMultipleViewsPerURI()) {
+            for (View vw : getApplication().getViews()) {
+                if (vw.getURI() != null && vw.getURI().equals(uri)) {
+                    vw.getComponent().requestFocus();
+                    return;
                 }
             }
-            app.setEnabled(false);
-            // Search for an empty view
-            View emptyView = app.getActiveView();
-            if (emptyView == null
-                    || !emptyView.isEmpty()
-                    || !emptyView.isEnabled()) {
-                emptyView = null;
-            }
-            final View p;
-            if (emptyView == null) {
-                p = app.createView();
-                app.add(p);
-                app.show(p);
-            } else {
-                p = emptyView;
-            }
-            openView(p);
         }
+        app.setEnabled(false);
+        // Search for an empty view
+        View emptyView = app.getActiveView();
+        if (emptyView == null
+                || !emptyView.isEmpty()
+                || !emptyView.isEnabled()) {
+            emptyView = null;
+        }
+        final View p;
+        if (emptyView == null) {
+            p = app.createView();
+            app.add(p);
+            app.show(p);
+        } else {
+            p = emptyView;
+        }
+        openView(p);
+
     }
 
     protected void openView(final View view) {
@@ -152,14 +156,14 @@ public class OpenRecentFileAction extends AbstractApplicationAction {
                 ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
                 JSheet.showMessageSheet(view.getComponent(),
                         "<html>" + UIManager.getString("OptionPane.css")
-                        + "<b>" + labels.getFormatted("file.open.couldntOpen.message", URIUtil.getName(uri)) + "</b><p>"
-                        + (message == null ? "" : message),
+                                + "<b>" + labels.getFormatted("file.open.couldntOpen.message", URIUtil.getName(uri)) + "</b><p>"
+                                + (message == null ? "" : message),
                         JOptionPane.ERROR_MESSAGE, new SheetListener() {
-                    @Override
-                    public void optionSelected(SheetEvent evt) {
-                        view.setEnabled(true);
-                    }
-                });
+                            @Override
+                            public void optionSelected(SheetEvent evt) {
+                                view.setEnabled(true);
+                            }
+                        });
             }
         }.execute();
     }
