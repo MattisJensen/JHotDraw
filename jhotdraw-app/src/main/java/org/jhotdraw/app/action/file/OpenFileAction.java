@@ -146,7 +146,7 @@ public class OpenFileAction extends AbstractApplicationAction {
 
     private static View findOrCreateEmptyView(Application app) {
         View emptyView = app.getActiveView();
-        if (!emptyView.isEmpty() || !emptyView.isEnabled()) {
+        if ((emptyView != null) && (!emptyView.isEmpty() || !emptyView.isEnabled())) {
             emptyView = null;
         }
         return emptyView;
