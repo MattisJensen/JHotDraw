@@ -286,10 +286,10 @@ public class SDIApplication extends AbstractApplication {
                 setActiveView(null);
             }
             view.setShowing(false);
-            JFrame f = (JFrame) SwingUtilities.getWindowAncestor(view.getComponent());
-            f.setVisible(false);
-            f.remove(view.getComponent());
-            f.dispose();
+            JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(view.getComponent());
+            jFrame.setVisible(false);
+            jFrame.remove(view.getComponent());
+            jFrame.dispose();
         }
     }
 
@@ -500,12 +500,12 @@ public class SDIApplication extends AbstractApplication {
 
     @Override
     public JMenu createHelpMenu(View view) {
-        JMenu m;
-        JMenuItem mi;
-        m = new JMenu();
-        labels.configureMenu(m, "help");
-        m.add(getAction(view, AboutAction.ID));
-        return m;
+        JMenu jMenu;
+        JMenuItem menuItem;
+        jMenu = new JMenu();
+        labels.configureMenu(jMenu, "help");
+        jMenu.add(getAction(view, AboutAction.ID));
+        return jMenu;
     }
 
     protected ActionMap createModelActionMap(ApplicationModel applicationModel) {
