@@ -47,6 +47,8 @@ public class ImageFigure extends AbstractAttributedDecoratedFigure
      */
     private transient BufferedImage bufferedImage;
 
+    private static final String IMAGE_DATA = "imageData";
+
     /**
      * Creates a new instance.
      */
@@ -205,8 +207,8 @@ public class ImageFigure extends AbstractAttributedDecoratedFigure
     @Override
     public void read(DOMInput in) throws IOException {
         super.read(in);
-        if (in.getElementCount("imageData") > 0) {
-            in.openElement("imageData");
+        if (in.getElementCount(IMAGE_DATA) > 0) {
+            in.openElement(IMAGE_DATA);
             String base64Data = in.getText();
             if (base64Data != null) {
                 setImageData(Base64.decode(base64Data));
@@ -219,7 +221,7 @@ public class ImageFigure extends AbstractAttributedDecoratedFigure
     public void write(DOMOutput out) throws IOException {
         super.write(out);
         if (getImageData() != null) {
-            out.openElement("imageData");
+            out.openElement(IMAGE_DATA);
             out.addText(Base64.encodeBytes(getImageData()));
             out.closeElement();
         }
