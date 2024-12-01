@@ -9,6 +9,7 @@ package org.jhotdraw.samples.svg.io;
 
 import org.jhotdraw.draw.figure.Figure;
 import org.jhotdraw.draw.figure.CompositeFigure;
+
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -29,6 +30,7 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.jhotdraw.draw.*;
 import org.jhotdraw.draw.io.InputFormat;
 import org.jhotdraw.formatter.FontFormatter;
@@ -36,9 +38,13 @@ import org.jhotdraw.geom.BezierPath;
 import org.jhotdraw.io.Base64;
 import org.jhotdraw.io.StreamPosTokenizer;
 import org.jhotdraw.samples.svg.Gradient;
+
 import static org.jhotdraw.samples.svg.SVGAttributeKeys.*;
+
 import org.jhotdraw.samples.svg.SVGAttributeKeys.TextAnchor;
+
 import static org.jhotdraw.samples.svg.SVGConstants.*;
+
 import org.jhotdraw.samples.svg.figures.SVGFigure;
 import org.jhotdraw.util.LocaleUtil;
 import org.jhotdraw.xml.css.CSSParser;
@@ -57,7 +63,6 @@ import org.xml.sax.SAXException;
  * Name: Abstract Factory.<br>
  * Role: Client.<br>
  * Partners: {@link SVGFigureFactory} as Abstract Factory.
- *
  *
  * @author Werner Randelshofer
  * @version $Id$
@@ -97,7 +102,6 @@ public class SVGInputFormat implements InputFormat {
     private HashMap<Element, Object> elementObjects;
     /**
      * Tokenizer for parsing SVG path expressions.
-     *
      */
     private StreamPosTokenizer toPathTokenizer;
     /**
@@ -150,6 +154,7 @@ public class SVGInputFormat implements InputFormat {
                     + attributes;
         }
     }
+
     /**
      * Each SVG element creates a new Viewport that we store
      * here.
@@ -219,11 +224,11 @@ public class SVGInputFormat implements InputFormat {
     /**
      * This is the main reading method.
      *
-     * @param in The input stream.
+     * @param in      The input stream.
      * @param drawing The drawing to which this method adds figures.
      * @param replace Whether attributes on the drawing object
-     * should by changed by this method. Set this to false, when reading individual
-     * images from the clipboard.
+     *                should by changed by this method. Set this to false, when reading individual
+     *                images from the clipboard.
      */
     @Override
     public void read(InputStream in, Drawing drawing, boolean replace) throws IOException {
@@ -573,8 +578,8 @@ public class SVGInputFormat implements InputFormat {
             if (readAttribute(child, ATTRIBUTE_VISIBILITY, VISIBILITY_VISIBLE).equals(VISIBILITY_VISIBLE)
                     && !readAttribute(child, ATTRIBUTE_DISPLAY, DISPLAY_INLINE).equals("none")
                     && childFigure != null) {
-                    childFigure.transform(viewBoxTransform);
-                    figures.add(childFigure);
+                childFigure.transform(viewBoxTransform);
+                figures.add(childFigure);
             }
         }
         viewportStack.pop();
@@ -1079,47 +1084,47 @@ public class SVGInputFormat implements InputFormat {
             throw ex;
         }
     }
+
     private static final HashSet<String> SUPPORTED_FEATURES = new HashSet<String>(
             Arrays.asList(new String[]{
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static",
-        //"http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static-DOM",
-        //"http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-animated",
-        //"http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-all",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#CoreAttribute",
-        //"http://www.w3.org/Graphics/SVG/feature/1.2/#NavigationAttribute",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#Structure",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessing",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessingAttribute",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#Image",
-        //"http://www.w3.org/Graphics/SVG/feature/1.2/#Prefetch",
-        //"http://www.w3.org/Graphics/SVG/feature/1.2/#Discard",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#Shape",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#Text",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#PaintAttribute",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#OpacityAttribute",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#GraphicsAttribute",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#Gradient",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#SolidColor",
-        "http://www.w3.org/Graphics/SVG/feature/1.2/#Hyperlinking", //"http://www.w3.org/Graphics/SVG/feature/1.2/#XlinkAttribute",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#ExternalResourcesRequired",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Scripting",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Handler",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Listener",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#TimedAnimation",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Animation",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Audio",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Video",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Font",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Extensibility",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#MediaAttribute",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#TransformedVideo",
-    //"http://www.w3.org/Graphics/SVG/feature/1.2/#ComposedVideo",
-    }));
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static-DOM",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-animated",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-all",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#CoreAttribute",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#NavigationAttribute",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#Structure",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessing",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessingAttribute",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#Image",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Prefetch",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Discard",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#Shape",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#Text",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#PaintAttribute",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#OpacityAttribute",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#GraphicsAttribute",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#Gradient",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#SolidColor",
+                    "http://www.w3.org/Graphics/SVG/feature/1.2/#Hyperlinking", //"http://www.w3.org/Graphics/SVG/feature/1.2/#XlinkAttribute",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#ExternalResourcesRequired",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Scripting",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Handler",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Listener",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#TimedAnimation",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Animation",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Audio",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Video",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Font",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#Extensibility",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#MediaAttribute",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#TextFlow",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#TransformedVideo",
+                    //"http://www.w3.org/Graphics/SVG/feature/1.2/#ComposedVideo",
+            }));
 
     /**
      * Evaluates an SVG "switch" element.
-     *
      */
     private Figure readSwitchElement(Element elem)
             throws IOException {
@@ -1149,11 +1154,11 @@ public class SVGInputFormat implements InputFormat {
                 && requiredExtensions.length == 0
                 && requiredFormats.length == 0
                 && requiredFonts.length == 0;
-        
+
         if (!(isMatch && systemLanguage.length > 0)) {
             return isMatch;
         }
-        
+
         isMatch = false;
         Locale locale = LocaleUtil.getDefault();
         for (String lng : systemLanguage) {
@@ -1463,7 +1468,7 @@ public class SVGInputFormat implements InputFormat {
     /**
      * Returns a value as a BezierPath array.
      * as specified in http://www.w3.org/TR/SVGMobile12/paths.html#PathDataBNF
-     *
+     * <p>
      * Also supports elliptical arc commands 'a' and 'A' as specified in
      * http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
      */
@@ -1784,7 +1789,7 @@ public class SVGInputFormat implements InputFormat {
                     path.quadTo(c1.x, c1.y, p.x, p.y);
                     nextCommand = 's';
                     break;
-                case 'A': 
+                case 'A':
                     // absolute-elliptical-arc rx ry x-axis-rotation large-arc-flag sweep-flag x y
                     if (tt.nextToken() != StreamPosTokenizer.TT_NUMBER) {
                         throw new IOException("rx coordinate missing for 'A' at position " + tt.getStartPosition() + " in " + str);
@@ -1819,8 +1824,8 @@ public class SVGInputFormat implements InputFormat {
                     path.arcTo(rx, ry, xAxisRotation, largeArcFlag, sweepFlag, p.x, p.y);
                     nextCommand = 'A';
                     break;
-                
-                case 'a': 
+
+                case 'a':
                     // absolute-elliptical-arc rx ry x-axis-rotation large-arc-flag sweep-flag x y
                     if (tt.nextToken() != StreamPosTokenizer.TT_NUMBER) {
                         throw new IOException("rx coordinate missing for 'A' at position " + tt.getStartPosition() + " in " + str);
@@ -1855,7 +1860,7 @@ public class SVGInputFormat implements InputFormat {
                     path.arcTo(rx, ry, xAxisRotation, largeArcFlag, sweepFlag, p.x, p.y);
                     nextCommand = 'a';
                     break;
-                
+
                 default:
                     if (DEBUG) {
                         System.out.println("SVGInputFormat.toPath aborting after illegal path command: " + command + " found in path " + str);
@@ -3078,8 +3083,8 @@ public class SVGInputFormat implements InputFormat {
             int th = Integer.decode(str);
             return new Color(
                     (th & 0xf) | ((th & 0xf) << 4)
-                    | ((th & 0xf0) << 4) | ((th & 0xf0) << 8)
-                    | ((th & 0xf00) << 8) | ((th & 0xf00) << 12));
+                            | ((th & 0xf0) << 4) | ((th & 0xf0) << 8)
+                            | ((th & 0xf00) << 8) | ((th & 0xf00) << 12));
         } else if (str.startsWith("rgb")) {
             try {
                 StringTokenizer tt = new StringTokenizer(str, "() ,");
@@ -3093,7 +3098,8 @@ public class SVGInputFormat implements InputFormat {
                         b.endsWith("%") ? (int) (Double.parseDouble(b.substring(0, b.length() - 1)) * 2.55) : Integer.decode(b));
                 return c;
             } catch (Exception e) {
-                /*if (DEBUG)*/ System.out.println("SVGInputFormat.toPaint illegal RGB value " + str);
+                /*if (DEBUG)*/
+                System.out.println("SVGInputFormat.toPaint illegal RGB value " + str);
                 e.printStackTrace();
                 return null;
             }
@@ -3140,8 +3146,8 @@ public class SVGInputFormat implements InputFormat {
             int th = Integer.decode(str);
             return new Color(
                     (th & 0xf) | ((th & 0xf) << 4)
-                    | ((th & 0xf0) << 4) | ((th & 0xf0) << 8)
-                    | ((th & 0xf00) << 8) | ((th & 0xf00) << 12));
+                            | ((th & 0xf0) << 4) | ((th & 0xf0) << 8)
+                            | ((th & 0xf00) << 8) | ((th & 0xf00) << 12));
         } else if (str.startsWith("rgb")) {
             try {
                 StringTokenizer tt = new StringTokenizer(str, "() ,");
