@@ -325,33 +325,38 @@ public class SVGInputFormat implements InputFormat {
      */
     private void flattenStyles(Element elem)
             throws IOException {
-        if (elem.getLocalName() != null && elem.getLocalName().equals("style")
-                && readAttribute(elem, "type", "").equals("text/css")
-                && elem.getTextContent() != null) {
+        if (isStyleElement(elem)) {
             CSSParser cssParser = new CSSParser();
             cssParser.parse(elem.getTextContent(), styleManager);
-        } else {
-            if (elem.getPrefix() == null
-                    || elem.getPrefix().equals(SVG_NAMESPACE)) {
-                String style = readAttribute(elem, "style", null);
-                if (style != null) {
-                    for (String styleProperty : style.split(";")) {
-                        String[] stylePropertyElements = styleProperty.split(":");
-                        if (stylePropertyElements.length == 2
-                                && !elem.hasAttributeNS(SVG_NAMESPACE, stylePropertyElements[0].trim())) {
-                            elem.setAttributeNS(SVG_NAMESPACE, stylePropertyElements[0].trim(),
-                                    stylePropertyElements[1].trim());
-                        }
-                    }
-                }
-                styleManager.applyStylesTo(elem);
-                NodeList list = elem.getChildNodes();
-                for (int i = 0; i < list.getLength(); i++) {
-                    Element child = (Element) list.item(i);
-                    flattenStyles(child);
+        } else if (elem.getPrefix() == null || elem.getPrefix().equals(SVG_NAMESPACE)) {
+            applyInlineStyles(elem);
+            styleManager.applyStylesTo(elem);
+            NodeList list = elem.getChildNodes();
+            for (int i = 0; i < list.getLength(); i++) {
+                Element child = (Element) list.item(i);
+                flattenStyles(child);
+            }
+        }
+    }
+
+    private void applyInlineStyles(Element elem) {
+        String style = readAttribute(elem, "style", null);
+        if (style != null) {
+            for (String styleProperty : style.split(";")) {
+                String[] stylePropertyElements = styleProperty.split(":");
+                if (stylePropertyElements.length == 2
+                        && !elem.hasAttributeNS(SVG_NAMESPACE, stylePropertyElements[0].trim())) {
+                    elem.setAttributeNS(SVG_NAMESPACE, stylePropertyElements[0].trim(),
+                            stylePropertyElements[1].trim());
                 }
             }
         }
+    }
+
+    private boolean isStyleElement(Element elem) {
+        return elem.getLocalName() != null && elem.getLocalName().equals("style")
+                && readAttribute(elem, "type", "").equals("text/css")
+                && elem.getTextContent() != null;
     }
 
     /**
