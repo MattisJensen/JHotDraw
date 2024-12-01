@@ -243,6 +243,39 @@ public class SVGInputFormat implements InputFormat {
         if (DEBUG) {
             System.out.println("SVGInputFormat document created " + (System.currentTimeMillis() - start));
         }
+        Element svg = getFirstSvgElement();
+        // Flatten CSS Styles
+        initStorageContext(document);
+        flattenStyles(svg);
+        readElement(svg);
+        if (DEBUG) {
+            long end = System.currentTimeMillis();
+            System.out.println("SVGInputFormat elapsed:" + (end - start));
+        }
+        if (replace) {
+            drawing.removeAllChildren();
+        }
+        drawing.addAll(figures);
+        if (replace) {
+            Viewport viewport = viewportStack.firstElement();
+            drawing.set(VIEWPORT_FILL, VIEWPORT_FILL.get(viewport.attributes));
+            drawing.set(VIEWPORT_FILL_OPACITY, VIEWPORT_FILL_OPACITY.get(viewport.attributes));
+            drawing.set(VIEWPORT_HEIGHT, VIEWPORT_HEIGHT.get(viewport.attributes));
+            drawing.set(VIEWPORT_WIDTH, VIEWPORT_WIDTH.get(viewport.attributes));
+        }
+        // Get rid of all objects we don't need anymore to help garbage collector.
+        identifiedElements.clear();
+        elementObjects.clear();
+        viewportStack.clear();
+        styleManager.clear();
+        document = null;
+        identifiedElements = null;
+        elementObjects = null;
+        viewportStack = null;
+        styleManager = null;
+    }
+
+    private Element getFirstSvgElement() throws IOException {
         // Search for the first 'svg' element in the XML document
         // in preorder sequence
         Element svg = document;
@@ -273,36 +306,7 @@ public class SVGInputFormat implements InputFormat {
                 && !svg.getPrefix().equals(SVG_NAMESPACE))) {
             throw new IOException("'svg' element expected: " + svg.getLocalName());
         }
-        // Flatten CSS Styles
-        initStorageContext(document);
-        flattenStyles(svg);
-        //long end2 = System.currentTimeMillis();
-        readElement(svg);
-        if (DEBUG) {
-            long end = System.currentTimeMillis();
-            System.out.println("SVGInputFormat elapsed:" + (end - start));
-        }
-        if (replace) {
-            drawing.removeAllChildren();
-        }
-        drawing.addAll(figures);
-        if (replace) {
-            Viewport viewport = viewportStack.firstElement();
-            drawing.set(VIEWPORT_FILL, VIEWPORT_FILL.get(viewport.attributes));
-            drawing.set(VIEWPORT_FILL_OPACITY, VIEWPORT_FILL_OPACITY.get(viewport.attributes));
-            drawing.set(VIEWPORT_HEIGHT, VIEWPORT_HEIGHT.get(viewport.attributes));
-            drawing.set(VIEWPORT_WIDTH, VIEWPORT_WIDTH.get(viewport.attributes));
-        }
-        // Get rid of all objects we don't need anymore to help garbage collector.
-        identifiedElements.clear();
-        elementObjects.clear();
-        viewportStack.clear();
-        styleManager.clear();
-        document = null;
-        identifiedElements = null;
-        elementObjects = null;
-        viewportStack = null;
-        styleManager = null;
+        return svg;
     }
 
     private void initStorageContext(Element root) {
