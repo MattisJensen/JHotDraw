@@ -68,6 +68,15 @@ public class SVGInputFormat implements InputFormat {
      * Set this to true, to getChild debug output on if (DEBUG) System.out.
      */
     private static final boolean DEBUG = false;
+    public static final String ATTRIBUTE_VISIBILITY = "visibility";
+    public static final String VISIBILITY_VISIBLE = "visible";
+    public static final String ATTRIBUTE_DISPLAY = "display";
+    public static final String DISPLAY_INLINE = "inline";
+    public static final String ATTRIBUTE_WIDTH = "width";
+    public static final String ATTRIBUTE_HEIGHT = "height";
+    public static final String ATTRIBUTE_XLINK_HREF = "xlink:href";
+    public static final String ATTRIBUTE_HREF = "href";
+    public static final String ATTRIBUTE_INHERIT = "inherit";
     /**
      * The SVGFigure factory is used to create Figure's for the drawing.
      */
@@ -495,8 +504,8 @@ public class SVGInputFormat implements InputFormat {
             Element child = (Element) list.item(i);
             Figure childFigure = readElement(child);
             // skip invisible elements
-            if (readAttribute(child, "visibility", "visible").equals("visible")
-                    && !readAttribute(child, "display", "inline").equals("none")) {
+            if (readAttribute(child, ATTRIBUTE_VISIBILITY, VISIBILITY_VISIBLE).equals(VISIBILITY_VISIBLE)
+                    && !readAttribute(child, ATTRIBUTE_DISPLAY, DISPLAY_INLINE).equals("none")) {
                 if (childFigure != null) {
                     g.basicAdd(childFigure);
                 }
@@ -527,8 +536,8 @@ public class SVGInputFormat implements InputFormat {
             Element child = (Element) list.item(i);
             Figure childFigure = readElement(child);
             // skip invisible elements
-            if (readAttribute(child, "visibility", "visible").equals("visible")
-                    && !readAttribute(child, "display", "inline").equals("none")) {
+            if (readAttribute(child, ATTRIBUTE_VISIBILITY, VISIBILITY_VISIBLE).equals(VISIBILITY_VISIBLE)
+                    && !readAttribute(child, ATTRIBUTE_DISPLAY, DISPLAY_INLINE).equals("none")) {
                 if (childFigure != null) {
                     g.basicAdd(childFigure);
                 }
@@ -561,8 +570,8 @@ public class SVGInputFormat implements InputFormat {
             Element child = (Element) list.item(i);
             Figure childFigure = readElement(child);
             // skip invisible elements
-            if (readAttribute(child, "visibility", "visible").equals("visible")
-                    && !readAttribute(child, "display", "inline").equals("none")
+            if (readAttribute(child, ATTRIBUTE_VISIBILITY, VISIBILITY_VISIBLE).equals(VISIBILITY_VISIBLE)
+                    && !readAttribute(child, ATTRIBUTE_DISPLAY, DISPLAY_INLINE).equals("none")
                     && childFigure != null) {
                     childFigure.transform(viewBoxTransform);
                     figures.add(childFigure);
@@ -574,8 +583,8 @@ public class SVGInputFormat implements InputFormat {
 
     private Viewport getCustomViewport(Element elem) throws IOException {
         Viewport viewport = new Viewport();
-        String widthValue = readAttribute(elem, "width", "100%");
-        String heightValue = readAttribute(elem, "height", "100%");
+        String widthValue = readAttribute(elem, ATTRIBUTE_WIDTH, "100%");
+        String heightValue = readAttribute(elem, ATTRIBUTE_HEIGHT, "100%");
         viewport.width = toWidth(elem, widthValue);
         viewport.height = toHeight(elem, heightValue);
         if (readAttribute(elem, "viewBox", "none").equals("none")) {
@@ -640,8 +649,8 @@ public class SVGInputFormat implements InputFormat {
         readShapeAttributes(elem, a);
         double x = toNumber(elem, readAttribute(elem, "x", "0"));
         double y = toNumber(elem, readAttribute(elem, "y", "0"));
-        double w = toWidth(elem, readAttribute(elem, "width", "0"));
-        double h = toHeight(elem, readAttribute(elem, "height", "0"));
+        double w = toWidth(elem, readAttribute(elem, ATTRIBUTE_WIDTH, "0"));
+        double h = toHeight(elem, readAttribute(elem, ATTRIBUTE_HEIGHT, "0"));
         String rxValue = readAttribute(elem, "rx", "none");
         String ryValue = readAttribute(elem, "ry", "none");
         if ("none".equals(rxValue)) {
@@ -741,8 +750,8 @@ public class SVGInputFormat implements InputFormat {
     private double[] readImageBounds(Element elem) throws IOException {
         double x = toNumber(elem, readAttribute(elem, "x", "0"));
         double y = toNumber(elem, readAttribute(elem, "y", "0"));
-        double w = toWidth(elem, readAttribute(elem, "width", "0"));
-        double h = toHeight(elem, readAttribute(elem, "height", "0"));
+        double w = toWidth(elem, readAttribute(elem, ATTRIBUTE_WIDTH, "0"));
+        double h = toHeight(elem, readAttribute(elem, ATTRIBUTE_HEIGHT, "0"));
         return new double[]{x, y, w, h};
     }
 
@@ -762,9 +771,9 @@ public class SVGInputFormat implements InputFormat {
     }
 
     private String getElementHref(Element elem) {
-        String href = readAttribute(elem, "xlink:href", null);
+        String href = readAttribute(elem, ATTRIBUTE_XLINK_HREF, null);
         if (href == null) {
-            href = readAttribute(elem, "href", null);
+            href = readAttribute(elem, ATTRIBUTE_HREF, null);
         }
         return href;
     }
@@ -1010,8 +1019,8 @@ public class SVGInputFormat implements InputFormat {
         double x = toNumber(elem, readAttribute(elem, "x", "0"));
         double y = toNumber(elem, readAttribute(elem, "y", "0"));
 // XXX - Handle "auto" width and height
-        double w = toWidth(elem, readAttribute(elem, "width", "0"));
-        double h = toHeight(elem, readAttribute(elem, "height", "0"));
+        double w = toWidth(elem, readAttribute(elem, ATTRIBUTE_WIDTH, "0"));
+        double h = toHeight(elem, readAttribute(elem, ATTRIBUTE_HEIGHT, "0"));
         DefaultStyledDocument doc = new DefaultStyledDocument();
         try {
             if (elem.getTextContent() != null) {
@@ -1119,8 +1128,8 @@ public class SVGInputFormat implements InputFormat {
             Element child = (Element) list.item(i);
             if (isMatch(child)) {
                 Figure figure = readElement(child);
-                if (readAttribute(child, "visibility", "visible").equals("visible")
-                        && !readAttribute(child, "display", "inline").equals("none")) {
+                if (readAttribute(child, ATTRIBUTE_VISIBILITY, VISIBILITY_VISIBLE).equals(VISIBILITY_VISIBLE)
+                        && !readAttribute(child, ATTRIBUTE_DISPLAY, DISPLAY_INLINE).equals("none")) {
                     return figure;
                 } else {
                     return null;
@@ -1178,7 +1187,7 @@ public class SVGInputFormat implements InputFormat {
         readOpacityAttribute(elem, a2);
         readUseShapeAttributes(elem, a2);
         readFontAttributes(elem, a2);
-        String href = readAttribute(elem, "xlink:href", null);
+        String href = readAttribute(elem, ATTRIBUTE_XLINK_HREF, null);
         if (href == null || !href.startsWith("#")) {
             return null;
         }
@@ -1213,14 +1222,14 @@ public class SVGInputFormat implements InputFormat {
     private String readInheritAttribute(Element elem, String attributeName, String defaultValue) {
         if (elem.hasAttributeNS(SVG_NAMESPACE, attributeName)) {
             String value = elem.getAttributeNS(SVG_NAMESPACE, attributeName);
-            if ("inherit".equals(value)) {
+            if (ATTRIBUTE_INHERIT.equals(value)) {
                 return readInheritAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
             } else {
                 return value;
             }
         } else if (elem.hasAttribute(attributeName)) {
             String value = elem.getAttribute(attributeName);
-            if ("inherit".equals(value)) {
+            if (ATTRIBUTE_INHERIT.equals(value)) {
                 return readInheritAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
             } else {
                 return value;
@@ -1243,12 +1252,12 @@ public class SVGInputFormat implements InputFormat {
         String value = null;
         if (elem.hasAttributeNS(SVG_NAMESPACE, attributeName)) {
             value = elem.getAttributeNS(SVG_NAMESPACE, attributeName);
-            if ("inherit".equals(value)) {
+            if (ATTRIBUTE_INHERIT.equals(value)) {
                 return readInheritColorAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
             }
         } else if (elem.hasAttribute(attributeName)) {
             value = elem.getAttribute(attributeName);
-            if ("inherit".equals(value)) {
+            if (ATTRIBUTE_INHERIT.equals(value)) {
                 return readInheritColorAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
             }
         } else if (elem.getParentNode() != null
@@ -1285,7 +1294,7 @@ public class SVGInputFormat implements InputFormat {
         } else {
             value = defaultValue;
         }
-        if ("inherit".equals(value)) {
+        if (ATTRIBUTE_INHERIT.equals(value)) {
             return readInheritFontSizeAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
         } else if (SVG_ABSOLUTE_FONT_SIZES.containsKey(value)) {
             return SVG_ABSOLUTE_FONT_SIZES.get(value);
@@ -1305,14 +1314,14 @@ public class SVGInputFormat implements InputFormat {
     private String readAttribute(Element elem, String attributeName, String defaultValue) {
         if (elem.hasAttributeNS(SVG_NAMESPACE, attributeName)) {
             String value = elem.getAttributeNS(SVG_NAMESPACE, attributeName);
-            if ("inherit".equals(value)) {
+            if (ATTRIBUTE_INHERIT.equals(value)) {
                 return readAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
             } else {
                 return value;
             }
         } else if (elem.hasAttribute(attributeName)) {
             String value = elem.getAttribute(attributeName);
-            if ("inherit".equals(value)) {
+            if (ATTRIBUTE_INHERIT.equals(value)) {
                 return readAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
             } else {
                 return value;
@@ -2626,7 +2635,7 @@ public class SVGInputFormat implements InputFormat {
         Object value;
         Double doubleValue;
         // width of the viewport
-        value = readAttribute(elem, "width", null);
+        value = readAttribute(elem, ATTRIBUTE_WIDTH, null);
         if (DEBUG) {
             System.out.println("SVGInputFormat READ viewport w/h factors:" + viewportStack.peek().widthPercentFactor + "," + viewportStack.peek().heightPercentFactor);
         }
@@ -2635,7 +2644,7 @@ public class SVGInputFormat implements InputFormat {
             VIEWPORT_WIDTH.put(a, doubleValue);
         }
         // height of the viewport
-        value = readAttribute(elem, "height", null);
+        value = readAttribute(elem, ATTRIBUTE_HEIGHT, null);
         if (value != null) {
             doubleValue = toLength(elem, (String) value, viewportStack.peek().heightPercentFactor);
             VIEWPORT_HEIGHT.put(a, doubleValue);
@@ -2687,7 +2696,7 @@ public class SVGInputFormat implements InputFormat {
         // Media:    all
         // Animatable:    yes
         // Computed value:    Specified value, except inherit
-        value = readAttribute(elem, "display", "inline");
+        value = readAttribute(elem, ATTRIBUTE_DISPLAY, DISPLAY_INLINE);
         if (DEBUG) {
             System.out.println("SVGInputFormat not implemented display=" + value);
         }
@@ -2769,7 +2778,7 @@ public class SVGInputFormat implements InputFormat {
         //Media:    visual
         //Animatable:    yes
         //Computed value:    Specified value, except inherit
-        value = readInheritAttribute(elem, "visibility", null);
+        value = readInheritAttribute(elem, ATTRIBUTE_VISIBILITY, null);
         if (DEBUG) {
             System.out.println("SVGInputFormat not implemented visibility=" + value);
         }
@@ -2840,7 +2849,7 @@ public class SVGInputFormat implements InputFormat {
         }
         if (stops.getLength() == 0) {
             // FIXME - Implement xlink support throughouth SVGInputFormat
-            String xlink = readAttribute(elem, "xlink:href", "");
+            String xlink = readAttribute(elem, ATTRIBUTE_XLINK_HREF, "");
             if (xlink.startsWith("#")
                     && identifiedElements.get(xlink.substring(1)) != null) {
                 stops = identifiedElements.get(xlink.substring(1)).getElementsByTagNameNS(SVG_NAMESPACE, "stop");
@@ -2877,7 +2886,7 @@ public class SVGInputFormat implements InputFormat {
         }
         if (stops.getLength() == 0) {
             // FIXME - Implement xlink support throughout SVGInputFormat
-            String xlink = readAttribute(elem, "xlink:href", "");
+            String xlink = readAttribute(elem, ATTRIBUTE_XLINK_HREF, "");
             if (xlink.startsWith("#")
                     && identifiedElements.get(xlink.substring(1)) != null) {
                 stops = identifiedElements.get(xlink.substring(1)).getElementsByTagNameNS(SVG_NAMESPACE, "stop");
