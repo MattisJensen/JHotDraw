@@ -247,8 +247,6 @@ public class SVGInputFormat implements InputFormat {
         // in preorder sequence
         Element svg = document;
         Stack<Element> stack = new Stack<Element>();
-        //LinkedList<Element> ll = new LinkedList<Element>();
-        //ll.add(document);
         stack.push((Element) document.getFirstChild());
         while (!stack.empty() && stack.peek().getNextSibling() != null) {
             Element iter = stack.peek();
@@ -275,7 +273,6 @@ public class SVGInputFormat implements InputFormat {
                 && !svg.getPrefix().equals(SVG_NAMESPACE))) {
             throw new IOException("'svg' element expected: " + svg.getLocalName());
         }
-        //long end1 = System.currentTimeMillis();
         // Flatten CSS Styles
         initStorageContext(document);
         flattenStyles(svg);
@@ -285,10 +282,6 @@ public class SVGInputFormat implements InputFormat {
             long end = System.currentTimeMillis();
             System.out.println("SVGInputFormat elapsed:" + (end - start));
         }
-        /*if (DEBUG) System.out.println("SVGInputFormat read:"+(end1-start));
-        if (DEBUG) System.out.println("SVGInputFormat flatten:"+(end2-end1));
-        if (DEBUG) System.out.println("SVGInputFormat build:"+(end-end2));
-         */
         if (replace) {
             drawing.removeAllChildren();
         }
@@ -342,7 +335,6 @@ public class SVGInputFormat implements InputFormat {
                         String[] stylePropertyElements = styleProperty.split(":");
                         if (stylePropertyElements.length == 2
                                 && !elem.hasAttributeNS(SVG_NAMESPACE, stylePropertyElements[0].trim())) {
-                            //if (DEBUG) System.out.println("flatten:"+Arrays.toString(stylePropertyElements));
                             elem.setAttributeNS(SVG_NAMESPACE, stylePropertyElements[0].trim(),
                                     stylePropertyElements[1].trim());
                         }
@@ -411,7 +403,6 @@ public class SVGInputFormat implements InputFormat {
                 f = null;
             } else if ("svg".equals(name)) {
                 f = readSVGElement(elem);
-                //f = readGElement(elem);
             } else if ("switch".equals(name)) {
                 f = readSwitchElement(elem);
             } else if ("text".equals(name)) {
@@ -434,7 +425,6 @@ public class SVGInputFormat implements InputFormat {
         }
         if (f instanceof SVGFigure) {
             if (((SVGFigure) f).isEmpty()) {
-                // if (DEBUG) System.out.println("Empty figure "+f);
                 return null;
             }
         } else if (f != null) {
@@ -741,7 +731,6 @@ public class SVGInputFormat implements InputFormat {
         // Delete the image data in case of failure
         if (bufferedImage == null) {
             imageData = null;
-            //if (DEBUG) System.out.println("FAILED:"+imageUrl);
         }
         // Create a figure from the image data and the buffered image.
         Figure figure = factory.createImage(x, y, w, h, imageData, bufferedImage, a);
@@ -1192,7 +1181,6 @@ public class SVGInputFormat implements InputFormat {
             double factor = Double.valueOf(value.substring(0, value.length() - 1));
             return factor * readInheritFontSizeAttribute((Element) elem.getParentNode(), attributeName, defaultValue);
         } else {
-            //return toScaledNumber(elem, value);
             return toNumber(elem, value);
         }
     }
