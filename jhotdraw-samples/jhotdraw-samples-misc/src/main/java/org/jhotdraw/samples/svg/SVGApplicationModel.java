@@ -178,7 +178,7 @@ public class SVGApplicationModel extends DefaultApplicationModel {
         final HashMap<FileFilter, InputFormat> fileFilterInputFormatMap
                 = new HashMap<FileFilter, InputFormat>();
         c.putClientProperty(INPUT_FORMAT_MAP_CLIENT_PROPERTY, fileFilterInputFormatMap);
-        javax.swing.filechooser.FileFilter firstFF = null;
+        javax.swing.filechooser.FileFilter firstFF = null; // For picking a "default" file filter.
         if (v == null) {
             v = new SVGView();
         }
@@ -188,7 +188,7 @@ public class SVGApplicationModel extends DefaultApplicationModel {
         }
         for (InputFormat format : d.getInputFormats()) {
             javax.swing.filechooser.FileFilter ff = format.getFileFilter();
-            if (firstFF == null) {
+            if (firstFF == null) { // If no file filter has been picked yet, pick this one.
                 firstFF = ff;
             }
             fileFilterInputFormatMap.put(ff, format);

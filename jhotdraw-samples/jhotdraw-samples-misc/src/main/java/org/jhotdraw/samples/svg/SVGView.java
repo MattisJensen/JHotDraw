@@ -15,6 +15,7 @@ import java.lang.reflect.*;
 import java.net.URI;
 import java.util.HashMap;
 import javax.swing.*;
+
 import org.jhotdraw.action.edit.RedoAction;
 import org.jhotdraw.action.edit.UndoAction;
 import org.jhotdraw.api.app.View;
@@ -130,49 +131,11 @@ public class SVGView extends AbstractView {
     /**
      * Reads the view from the specified uri.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void read(final URI uri, URIChooser chooser) throws IOException {
         try {
-            JFileURIChooser fc = (JFileURIChooser) chooser;
-            final Drawing drawing = createDrawing();
-            // We start with the selected uri format in the uri chooser,
-            // and then try out all formats we can import.
-            // We need to try out all formats, because the user may have
-            // chosen to load a uri without having used the uri chooser.
-            HashMap<javax.swing.filechooser.FileFilter, InputFormat> fileFilterInputFormatMap = null;
-            if (fc != null) {
-                fileFilterInputFormatMap = (HashMap<javax.swing.filechooser.FileFilter, InputFormat>) fc.getClientProperty(SVGApplicationModel.INPUT_FORMAT_MAP_CLIENT_PROPERTY);
-            }
-            //private HashMap<javax.swing.filechooser.FileFilter, OutputFormat> fileFilterOutputFormatMap;
-            InputFormat selectedFormat = (fc == null) ? null : fileFilterInputFormatMap.get(fc.getFileFilter());
-            boolean success = false;
-            if (selectedFormat != null) {
-                try {
-                    selectedFormat.read(uri, drawing, true);
-                    success = true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    // try with the next input format
-                }
-            }
-            if (!success) {
-                for (InputFormat sfi : drawing.getInputFormats()) {
-                    if (sfi != selectedFormat) {
-                        try {
-                            sfi.read(uri, drawing, true);
-                            success = true;
-                            break;
-                        } catch (Exception e) {
-                            // try with the next input format
-                        }
-                    }
-                }
-            }
-            if (!success) {
-                ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
-                throw new IOException(labels.getFormatted("file.open.unsupportedFileFormat.message", URIUtil.getName(uri)));
-            }
+            final Drawing drawing = getDrawingFromCorrectInputFormat(uri, (JFileURIChooser) chooser);
+
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
@@ -182,15 +145,51 @@ public class SVGView extends AbstractView {
                     undo.discardAllEdits();
                 }
             });
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | InvocationTargetException e) {
             InternalError error = new InternalError();
             e.initCause(e);
             throw error;
-        } catch (InvocationTargetException e) {
-            InternalError error = new InternalError();
-            error.initCause(e);
-            throw error;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Drawing getDrawingFromCorrectInputFormat(URI uri, JFileURIChooser chooser) throws IOException {
+        final Drawing drawing = createDrawing();
+        // We start with the selected uri format in the uri chooser,
+        // and then try out all formats we can import.
+        // We need to try out all formats, because the user may have
+        // chosen to load a uri without having used the uri chooser.
+        HashMap<javax.swing.filechooser.FileFilter, InputFormat> fileFilterInputFormatMap = null;
+        if (chooser != null) {
+            fileFilterInputFormatMap = (HashMap<javax.swing.filechooser.FileFilter, InputFormat>) chooser.getClientProperty(SVGApplicationModel.INPUT_FORMAT_MAP_CLIENT_PROPERTY);
+        }
+        InputFormat selectedFormat = (chooser == null) ? null : fileFilterInputFormatMap.get(chooser.getFileFilter());
+        boolean success = false;
+        if (selectedFormat != null) {
+            try {
+                selectedFormat.read(uri, drawing, true);
+                success = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                // try with the next input format
+            }
+        }
+        if (!success) {
+            for (InputFormat sfi : drawing.getInputFormats()) {
+                if (sfi != selectedFormat) {
+                    try {
+                        sfi.read(uri, drawing, true);
+                        break;
+                    } catch (IOException e) {
+                        // try with the next input format
+                    }
+                }
+            }
+
+            ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.app.Labels");
+            throw new IOException(labels.getFormatted("file.open.unsupportedFileFormat.message", URIUtil.getName(uri)));
+        }
+        return drawing;
     }
 
     public Drawing getDrawing() {
@@ -254,6 +253,7 @@ public class SVGView extends AbstractView {
         setLayout(new java.awt.BorderLayout());
         add(svgPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jhotdraw.samples.svg.SVGDrawingPanel svgPanel;
     // End of variables declaration//GEN-END:variables

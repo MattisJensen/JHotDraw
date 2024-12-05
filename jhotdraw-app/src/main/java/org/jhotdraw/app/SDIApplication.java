@@ -159,9 +159,9 @@ public class SDIApplication extends AbstractApplication {
     }
 
     @Override
-    public void remove(View p) {
-        super.remove(p);
-        if (views().size() == 0) {
+    public void remove(View view) {
+        super.remove(view);
+        if (this.views().size() == 0) {
             stop();
         }
     }
@@ -196,15 +196,15 @@ public class SDIApplication extends AbstractApplication {
     public void show(final View view) {
         if (!view.isShowing()) {
             view.setShowing(true);
-            final JFrame f = new JFrame();
-            f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            updateViewTitle(view, f);
+            final JFrame jFrame = new JFrame();
+            jFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            updateViewTitle(view, jFrame);
             JPanel panel = (JPanel) wrapViewComponent(view);
-            f.add(panel);
-            f.setSize(new Dimension(600, 400));
-            f.setJMenuBar(createMenuBar(view));
-            PreferencesUtil.installFramePrefsHandler(prefs, "view", f);
-            Point loc = f.getLocation();
+            jFrame.add(panel);
+            jFrame.setSize(new Dimension(600, 400));
+            jFrame.setJMenuBar(createMenuBar(view));
+            PreferencesUtil.installFramePrefsHandler(prefs, "view", jFrame);
+            Point loc = jFrame.getLocation();
             boolean moved;
             do {
                 moved = false;
@@ -220,12 +220,12 @@ public class SDIApplication extends AbstractApplication {
                     }
                 }
             } while (moved);
-            f.setLocation(loc);
-            f.addWindowListener(new WindowAdapter() {
+            jFrame.setLocation(loc);
+            jFrame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(final WindowEvent evt) {
                     getAction(view, CloseFileAction.ID).actionPerformed(
-                            new ActionEvent(f, ActionEvent.ACTION_PERFORMED,
+                            new ActionEvent(jFrame, ActionEvent.ACTION_PERFORMED,
                                     "windowClosing"));
                 }
 
@@ -247,11 +247,11 @@ public class SDIApplication extends AbstractApplication {
                             || name.equals(View.URI_PROPERTY)
                             || name.equals(View.TITLE_PROPERTY)
                             || name.equals(View.MULTIPLE_OPEN_ID_PROPERTY)) {
-                        updateViewTitle(view, f);
+                        updateViewTitle(view, jFrame);
                     }
                 }
             });
-            f.setVisible(true);
+            jFrame.setVisible(true);
             view.start();
         }
     }
@@ -260,12 +260,12 @@ public class SDIApplication extends AbstractApplication {
      * Returns the view component. Eventually wraps it into
      * another component in order to provide additional functionality.
      */
-    protected Component wrapViewComponent(View p) {
-        JComponent c = p.getComponent();
+    protected Component wrapViewComponent(View view) {
+        JComponent c = view.getComponent();
         if (getModel() != null) {
             LinkedList<Action> toolBarActions = new LinkedList<>();
             int id = 0;
-            for (JToolBar tb : new ReversedList<>(getModel().createToolBars(this, p))) {
+            for (JToolBar tb : new ReversedList<>(getModel().createToolBars(this, view))) {
                 id++;
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.add(tb, BorderLayout.NORTH);
@@ -274,28 +274,28 @@ public class SDIApplication extends AbstractApplication {
                 PreferencesUtil.installToolBarPrefsHandler(prefs, "toolbar." + id, tb);
                 toolBarActions.addFirst(new ToggleVisibleAction(tb, tb.getName()));
             }
-            p.getComponent().putClientProperty("toolBarActions", toolBarActions);
+            view.getComponent().putClientProperty("toolBarActions", toolBarActions);
         }
         return c;
     }
 
     @Override
-    public void hide(View p) {
-        if (p.isShowing()) {
-            if (getActiveView() == p) {
+    public void hide(View view) {
+        if (view.isShowing()) {
+            if (getActiveView() == view) {
                 setActiveView(null);
             }
-            p.setShowing(false);
-            JFrame f = (JFrame) SwingUtilities.getWindowAncestor(p.getComponent());
-            f.setVisible(false);
-            f.remove(p.getComponent());
-            f.dispose();
+            view.setShowing(false);
+            JFrame jFrame = (JFrame) SwingUtilities.getWindowAncestor(view.getComponent());
+            jFrame.setVisible(false);
+            jFrame.remove(view.getComponent());
+            jFrame.dispose();
         }
     }
 
     @Override
-    public void dispose(View p) {
-        super.dispose(p);
+    public void dispose(View view) {
+        super.dispose(view);
         if (views().size() == 0) {
             stop();
         }
@@ -304,8 +304,8 @@ public class SDIApplication extends AbstractApplication {
     /**
      * Creates a menu bar.
      */
-    protected JMenuBar createMenuBar(View v) {
-        JMenuBar mb = new JMenuBar();
+    protected JMenuBar createMenuBar(View view) {
+        JMenuBar menuBar = new JMenuBar();
         // Get menus from application model
         JMenu fileMenu = null;
         JMenu editMenu = null;
@@ -317,89 +317,89 @@ public class SDIApplication extends AbstractApplication {
         String viewMenuText = labels.getString("view.text");
         String windowMenuText = labels.getString("window.text");
         String helpMenuText = labels.getString("help.text");
-        LinkedList<JMenu> ll = new LinkedList<>();
-        getModel().getMenuBuilder().addOtherMenus(ll, this, v);
-        for (JMenu mm : ll) {
-            String text = mm.getText();
+        LinkedList<JMenu> jMenuLinkedList = new LinkedList<>();
+        getModel().getMenuBuilder().addOtherMenus(jMenuLinkedList, this, view);
+        for (JMenu menu : jMenuLinkedList) {
+            String text = menu.getText();
             if (text == null) {
             } else if (text.equals(fileMenuText)) {
-                fileMenu = mm;
+                fileMenu = menu;
                 continue;
             } else if (text.equals(editMenuText)) {
-                editMenu = mm;
+                editMenu = menu;
                 continue;
             } else if (text.equals(viewMenuText)) {
-                viewMenu = mm;
+                viewMenu = menu;
                 continue;
             } else if (text.equals(windowMenuText)) {
-                windowMenu = mm;
+                windowMenu = menu;
                 continue;
             } else if (text.equals(helpMenuText)) {
-                helpMenu = mm;
+                helpMenu = menu;
                 continue;
             }
-            mb.add(mm);
+            menuBar.add(menu);
         }
         // Create missing standard menus
         if (fileMenu == null) {
-            fileMenu = createFileMenu(v);
+            fileMenu = createFileMenu(view);
         }
         if (editMenu == null) {
-            editMenu = createEditMenu(v);
+            editMenu = createEditMenu(view);
         }
         if (viewMenu == null) {
-            viewMenu = createViewMenu(v);
+            viewMenu = createViewMenu(view);
         }
         if (windowMenu == null) {
-            windowMenu = createWindowMenu(v);
+            windowMenu = createWindowMenu(view);
         }
         if (helpMenu == null) {
-            helpMenu = createHelpMenu(v);
+            helpMenu = createHelpMenu(view);
         }
         // Insert standard menus into menu bar
         if (fileMenu != null) {
-            mb.add(fileMenu, 0);
+            menuBar.add(fileMenu, 0);
         }
         if (editMenu != null) {
-            mb.add(editMenu, Math.min(1, mb.getComponentCount()));
+            menuBar.add(editMenu, Math.min(1, menuBar.getComponentCount()));
         }
         if (viewMenu != null) {
-            mb.add(viewMenu, Math.min(2, mb.getComponentCount()));
+            menuBar.add(viewMenu, Math.min(2, menuBar.getComponentCount()));
         }
         if (windowMenu != null) {
-            mb.add(windowMenu);
+            menuBar.add(windowMenu);
         }
         if (helpMenu != null) {
-            mb.add(helpMenu);
+            menuBar.add(helpMenu);
         }
-        return mb;
+        return menuBar;
     }
 
     @Override
     public JMenu createFileMenu(View view) {
-        JMenu m;
-        m = new JMenu();
-        labels.configureMenu(m, "file");
+        JMenu jMenu;
+        jMenu = new JMenu();
+        labels.configureMenu(jMenu, "file");
         MenuBuilder mb = model.getMenuBuilder();
-        mb.addClearFileItems(m, this, view);
-        mb.addNewFileItems(m, this, view);
-        mb.addNewWindowItems(m, this, view);
-        mb.addLoadFileItems(m, this, view);
-        mb.addOpenFileItems(m, this, view);
+        mb.addClearFileItems(jMenu, this, view);
+        mb.addNewFileItems(jMenu, this, view);
+        mb.addNewWindowItems(jMenu, this, view);
+        mb.addLoadFileItems(jMenu, this, view);
+        mb.addOpenFileItems(jMenu, this, view);
         if (getAction(view, LoadFileAction.ID) != null
                 || getAction(view, OpenFileAction.ID) != null
                 || getAction(view, LoadDirectoryAction.ID) != null
                 || getAction(view, OpenDirectoryAction.ID) != null) {
-            m.add(createOpenRecentFileMenu(view));
+            jMenu.add(createOpenRecentFileMenu(view));
         }
-        maybeAddSeparator(m);
-        mb.addSaveFileItems(m, this, view);
-        mb.addExportFileItems(m, this, view);
-        mb.addPrintFileItems(m, this, view);
-        mb.addOtherFileItems(m, this, view);
-        maybeAddSeparator(m);
-        mb.addCloseFileItems(m, this, view);
-        return (m.getItemCount() == 0) ? null : m;
+        maybeAddSeparator(jMenu);
+        mb.addSaveFileItems(jMenu, this, view);
+        mb.addExportFileItems(jMenu, this, view);
+        mb.addPrintFileItems(jMenu, this, view);
+        mb.addOtherFileItems(jMenu, this, view);
+        maybeAddSeparator(jMenu);
+        mb.addCloseFileItems(jMenu, this, view);
+        return (jMenu.getItemCount() == 0) ? null : jMenu;
     }
 
     @Override
@@ -429,9 +429,9 @@ public class SDIApplication extends AbstractApplication {
      * Updates the title of a view and displays it in the given frame.
      *
      * @param view The view.
-     * @param f The frame.
+     * @param jFrame The frame.
      */
-    protected void updateViewTitle(View view, JFrame f) {
+    protected void updateViewTitle(View view, JFrame jFrame) {
         URI uri = view.getURI();
         String title;
         if (uri == null) {
@@ -443,7 +443,7 @@ public class SDIApplication extends AbstractApplication {
             title += "*";
         }
         view.setTitle(labels.getFormatted("frame.title", title, getName(), view.getMultipleOpenId()));
-        f.setTitle(view.getTitle());
+        jFrame.setTitle(view.getTitle());
     }
 
     @Override
@@ -477,51 +477,51 @@ public class SDIApplication extends AbstractApplication {
     public JMenu createViewMenu(final View view) {
         Object object = view.getComponent().getClientProperty("toolBarActions");
         LinkedList<Action> viewActions = (LinkedList<Action>) object;
-        JMenu m, m2;
-        JMenuItem mi;
-        JCheckBoxMenuItem cbmi;
-        m = new JMenu();
-        labels.configureMenu(m, "view");
+        JMenu jMenu, jMenu1;
+        JMenuItem jMenuItem;
+        JCheckBoxMenuItem jCheckBoxMenuItem;
+        jMenu = new JMenu();
+        labels.configureMenu(jMenu, "view");
         if (viewActions != null && viewActions.size() > 0) {
-            m2 = (viewActions.size() == 1) ? m : new JMenu(labels.getString("toolBars"));
+            jMenu1 = (viewActions.size() == 1) ? jMenu : new JMenu(labels.getString("toolBars"));
             for (Action a : viewActions) {
-                cbmi = new JCheckBoxMenuItem(a);
-                ActionUtil.configureJCheckBoxMenuItem(cbmi, a);
-                m2.add(cbmi);
+                jCheckBoxMenuItem = new JCheckBoxMenuItem(a);
+                ActionUtil.configureJCheckBoxMenuItem(jCheckBoxMenuItem, a);
+                jMenu1.add(jCheckBoxMenuItem);
             }
-            if (m2 != m) {
-                m.add(m2);
+            if (jMenu1 != jMenu) {
+                jMenu.add(jMenu1);
             }
         }
         MenuBuilder mb = model.getMenuBuilder();
-        mb.addOtherViewItems(m, this, view);
-        return (m.getItemCount() > 0) ? m : null;
+        mb.addOtherViewItems(jMenu, this, view);
+        return (jMenu.getItemCount() > 0) ? jMenu : null;
     }
 
     @Override
-    public JMenu createHelpMenu(View p) {
-        JMenu m;
-        JMenuItem mi;
-        m = new JMenu();
-        labels.configureMenu(m, "help");
-        m.add(getAction(p, AboutAction.ID));
-        return m;
+    public JMenu createHelpMenu(View view) {
+        JMenu jMenu;
+        JMenuItem menuItem;
+        jMenu = new JMenu();
+        labels.configureMenu(jMenu, "help");
+        jMenu.add(getAction(view, AboutAction.ID));
+        return jMenu;
     }
 
-    protected ActionMap createModelActionMap(ApplicationModel mo) {
+    protected ActionMap createModelActionMap(ApplicationModel applicationModel) {
         ActionMap rootMap = new ActionMap();
         rootMap.put(AboutAction.ID, new AboutAction(this));
         rootMap.put(ClearRecentFilesMenuAction.ID, new ClearRecentFilesMenuAction(this));
-        ActionMap moMap = mo.createActionMap(this, null);
+        ActionMap moMap = applicationModel.createActionMap(this, null);
         moMap.setParent(rootMap);
         return moMap;
     }
 
     @Override
-    protected ActionMap createViewActionMap(View v) {
+    protected ActionMap createViewActionMap(View view) {
         ActionMap intermediateMap = new ActionMap();
-        intermediateMap.put(CloseFileAction.ID, new CloseFileAction(this, v));
-        ActionMap vMap = model.createActionMap(this, v);
+        intermediateMap.put(CloseFileAction.ID, new CloseFileAction(this, view));
+        ActionMap vMap = model.createActionMap(this, view);
         vMap.setParent(intermediateMap);
         intermediateMap.setParent(getActionMap(null));
         return vMap;
