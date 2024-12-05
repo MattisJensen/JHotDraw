@@ -122,7 +122,7 @@ public class OpenFileAction extends AbstractApplicationAction {
         Opens a JFileChooser dialog, for the user to choose which file to open. If action is canceled, and the view 
         is null, it is disposed.
      */
-    private boolean handleFileChoice(View view, Application app, boolean disposeView) {
+    protected boolean handleFileChoice(View view, Application app, boolean disposeView) {
         URIChooser chooser = getChooser(view);
         chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 
@@ -144,7 +144,7 @@ public class OpenFileAction extends AbstractApplicationAction {
         return fileApproved;
     }
 
-    private static View findOrCreateEmptyView(Application app) {
+    protected static View findOrCreateEmptyView(Application app) {
         View emptyView = app.getActiveView();
         if ((emptyView != null) && (!emptyView.isEmpty() || !emptyView.isEnabled())) {
             emptyView = null;
