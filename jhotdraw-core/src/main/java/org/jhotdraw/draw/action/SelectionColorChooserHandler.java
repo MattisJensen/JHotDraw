@@ -30,7 +30,7 @@ public class SelectionColorChooserHandler extends AbstractSelectedAction
     protected JColorChooser colorChooser;
     protected JPopupMenu popupMenu;
     protected boolean isUpdating = false;
-    private UndoableEdit lastEdit;
+    private transient UndoableEdit lastEdit;
 
     /**
      * Creates a new instance.
@@ -111,7 +111,6 @@ public class SelectionColorChooserHandler extends AbstractSelectedAction
                 for (Figure f : getView().getSelectedFigures()) {
                     Color figureColor = f.get(key);
                     colorChooser.setColor(figureColor == null ? new Color(0, true) : figureColor);
-                    break;
                 }
             }
             isUpdating = false;
