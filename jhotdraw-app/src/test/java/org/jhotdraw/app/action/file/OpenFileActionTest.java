@@ -18,11 +18,6 @@ public class OpenFileActionTest {
     View view;
     URIChooser uriChooser;
 
-    @org.junit.After
-    public void tearDown() throws Exception {
-    }
-
-
     @Before
     public void setUp() {
         app = mock(Application.class);
