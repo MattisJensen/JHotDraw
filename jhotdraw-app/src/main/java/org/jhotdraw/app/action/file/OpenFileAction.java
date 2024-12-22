@@ -18,6 +18,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,7 +140,7 @@ public class OpenFileAction extends AbstractApplicationAction {
                     }
                 }
             }
-            openViewFromURI(view, uri, chooser);
+            openViewFromURI(view, uri, chooser, null);
         }
         return fileApproved;
     }
@@ -152,7 +153,7 @@ public class OpenFileAction extends AbstractApplicationAction {
         return emptyView;
     }
 
-    protected void openViewFromURI(final View view, final URI uri, final URIChooser chooser) {
+    protected void openViewFromURI(final View view, final URI uri, final URIChooser chooser, final CountDownLatch latch) {
         final Application app = getApplication();
         app.setEnabled(true);
         view.setEnabled(false);
@@ -196,6 +197,10 @@ public class OpenFileAction extends AbstractApplicationAction {
                 } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(OpenFileAction.class.getName()).log(Level.SEVERE, null, ex);
                     failed(ex);
+                } finally {
+                    if (latch != null) {
+                        latch.countDown(); // Used for testing purposes only.
+                    }
                 }
             }
 

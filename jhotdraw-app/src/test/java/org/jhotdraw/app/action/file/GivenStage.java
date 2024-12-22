@@ -50,11 +50,11 @@ public class GivenStage extends Stage<GivenStage> {
 
     public GivenStage an_open_file_action() {
         latch = new CountDownLatch(1);
+        CountDownLatch latch1 = latch;
         openFileAction = new OpenFileAction(app) {
             @Override
-            protected void openViewFromURI(View view, URI uri, URIChooser chooser) {
-                super.openViewFromURI(view, uri, chooser);
-                latch.countDown(); // Signal that the SwingWorker has completed
+            protected void openViewFromURI(View view, URI uri, URIChooser chooser, CountDownLatch latch) {
+                super.openViewFromURI(view, uri, chooser, latch1);
             }
 
             @Override

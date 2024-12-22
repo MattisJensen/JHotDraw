@@ -1,0 +1,147 @@
+{
+  "className": "org.jhotdraw.app.action.file.OpenFileActionJGivenTest",
+  "name": "Open File Action J Given",
+  "scenarios": [
+    {
+      "className": "org.jhotdraw.app.action.file.OpenFileActionJGivenTest",
+      "testMethodName": "testOpenFileAction_with_supported_file_format",
+      "description": "testOpenFileAction with supported file format",
+      "tagIds": [],
+      "explicitParameters": [],
+      "derivedParameters": [],
+      "scenarioCases": [
+        {
+          "caseNr": 1,
+          "steps": [
+            {
+              "name": "a view",
+              "words": [
+                {
+                  "value": "Given",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "a view"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 360328987,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "a uri chooser",
+              "words": [
+                {
+                  "value": "and",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "a uri chooser"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 19010462,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "a file of supported format",
+              "words": [
+                {
+                  "value": "and",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "a file of supported format"
+                },
+                {
+                  "value": "png",
+                  "argumentInfo": {
+                    "argumentName": "format",
+                    "formattedValue": "png"
+                  }
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 3164447,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "an application",
+              "words": [
+                {
+                  "value": "and",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "an application"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 47439920,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "an open file action",
+              "words": [
+                {
+                  "value": "and",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "an open file action"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 112819989,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "the file is opened",
+              "words": [
+                {
+                  "value": "When",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "the file is opened"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 5654551,
+              "depth": 0,
+              "parentFailed": false
+            },
+            {
+              "name": "a new canvas is created with file contents",
+              "words": [
+                {
+                  "value": "Then",
+                  "isIntroWord": true
+                },
+                {
+                  "value": "a new canvas is created with file contents"
+                }
+              ],
+              "status": "PASSED",
+              "durationInNanos": 58046781,
+              "depth": 0,
+              "parentFailed": false
+            }
+          ],
+          "explicitArguments": [],
+          "derivedArguments": [],
+          "status": "SUCCESS",
+          "durationInNanos": 621173707
+        }
+      ],
+      "casesAsTable": false,
+      "durationInNanos": 621173707
+    }
+  ],
+  "tagMap": {}
+}

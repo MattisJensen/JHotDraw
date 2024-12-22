@@ -25,7 +25,7 @@ public class ThenStage extends Stage<ThenStage> {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        verify(view).setURI(fileUri); // FIXME: This is called before the SwingWorker's done() method is called, but after the SwingWorker's doInBackground() method is called.
+        verify(view).setURI(fileUri);
         try {
             verify(view).read(any(), any());
         } catch (Exception e) {
