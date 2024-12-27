@@ -16,6 +16,9 @@ import org.jhotdraw.action.edit.PasteAction;
 import org.jhotdraw.action.edit.SelectAllAction;
 import org.jhotdraw.draw.figure.AbstractAttributedFigure;
 import static org.jhotdraw.draw.AttributeKeys.*;
+import static org.jhotdraw.gui.action.ButtonFactory.createBringToFrontAction;
+import static org.jhotdraw.gui.action.ButtonFactory.createSendToBackAction;
+
 import org.jhotdraw.draw.figure.BezierFigure;
 import org.jhotdraw.draw.figure.ConnectionFigure;
 import org.jhotdraw.draw.DefaultDrawing;
@@ -79,8 +82,8 @@ public class DrawingPanel extends JPanel {
         pb.add(new GroupAction(editor));
         pb.add(new UngroupAction(editor));
         pb.addSeparator();
-        pb.add(new BringToFrontAction(editor));
-        pb.add(new SendToBackAction(editor));
+        pb.add(createBringToFrontAction(editor));
+        pb.add(createSendToBackAction(editor));
         pb.addSeparator();
         pb.add(new CutAction());
         pb.add(new CopyAction());

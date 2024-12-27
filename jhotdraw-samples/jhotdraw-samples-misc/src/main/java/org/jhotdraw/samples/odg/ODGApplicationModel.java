@@ -35,6 +35,9 @@ import org.jhotdraw.draw.io.OutputFormat;
 import org.jhotdraw.draw.tool.CreationTool;
 import org.jhotdraw.gui.JFileURIChooser;
 import org.jhotdraw.gui.action.ButtonFactory;
+
+import static org.jhotdraw.gui.action.ButtonFactory.createBringToFrontAction;
+import static org.jhotdraw.gui.action.ButtonFactory.createSendToBackAction;
 import static org.jhotdraw.samples.odg.ODGAttributeKeys.*;
 import org.jhotdraw.samples.odg.figures.ODGGroupFigure;
 import org.jhotdraw.samples.odg.figures.ODGPathFigure;
@@ -93,8 +96,8 @@ public class ODGApplicationModel extends DefaultApplicationModel {
         a.add(new CombineAction(editor));
         a.add(new SplitAction(editor));
         a.add(null); // separator
-        a.add(new BringToFrontAction(editor));
-        a.add(new SendToBackAction(editor));
+        a.add(createBringToFrontAction(editor));
+        a.add(createSendToBackAction(editor));
         return a;
     }
 

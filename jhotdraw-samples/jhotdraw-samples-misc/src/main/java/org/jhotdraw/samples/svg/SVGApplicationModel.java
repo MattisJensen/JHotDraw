@@ -36,6 +36,9 @@ import org.jhotdraw.samples.svg.action.SplitAction;
 import org.jhotdraw.samples.svg.action.ViewSourceAction;
 import org.jhotdraw.samples.svg.figures.SVGGroupFigure;
 
+import static org.jhotdraw.gui.action.ButtonFactory.createBringToFrontAction;
+import static org.jhotdraw.gui.action.ButtonFactory.createSendToBackAction;
+
 /**
  * Provides meta-data and factory methods for an application.
  * <p>
@@ -92,8 +95,8 @@ public class SVGApplicationModel extends DefaultApplicationModel {
         m.put(UngroupAction.ID, new UngroupAction(editor, new SVGGroupFigure()));
         m.put(CombineAction.ID, new CombineAction(editor));
         m.put(SplitAction.ID, new SplitAction(editor));
-        m.put(BringToFrontAction.ID, new BringToFrontAction(editor));
-        m.put(SendToBackAction.ID, new SendToBackAction(editor));
+        m.put(BringToFrontAction.ID, createBringToFrontAction(editor));
+        m.put(SendToBackAction.ID, createSendToBackAction(editor));
         //view.addDisposable(action);
     }
 
@@ -121,8 +124,8 @@ public class SVGApplicationModel extends DefaultApplicationModel {
         m.put(UngroupAction.ID, new UngroupAction(editor, new SVGGroupFigure()));
         m.put(CombineAction.ID, new CombineAction(editor));
         m.put(SplitAction.ID, new SplitAction(editor));
-        m.put(BringToFrontAction.ID, new BringToFrontAction(editor));
-        m.put(SendToBackAction.ID, new SendToBackAction(editor));
+        m.put(BringToFrontAction.ID, createBringToFrontAction(editor));
+        m.put(SendToBackAction.ID, createSendToBackAction(editor));
         return m;
     }
 

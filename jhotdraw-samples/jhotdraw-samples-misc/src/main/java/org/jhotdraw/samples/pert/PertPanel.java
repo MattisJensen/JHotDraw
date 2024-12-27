@@ -34,6 +34,9 @@ import org.jhotdraw.samples.pert.figures.TaskFigure;
 import org.jhotdraw.undo.UndoRedoManager;
 import org.jhotdraw.util.*;
 
+import static org.jhotdraw.gui.action.ButtonFactory.createBringToFrontAction;
+import static org.jhotdraw.gui.action.ButtonFactory.createSendToBackAction;
+
 /**
  * PertPanel.
  *
@@ -66,8 +69,8 @@ public class PertPanel extends JPanel {
         pb.add(new GroupAction(editor));
         pb.add(new UngroupAction(editor));
         pb.addSeparator();
-        pb.add(new BringToFrontAction(editor));
-        pb.add(new SendToBackAction(editor));
+        pb.add(createBringToFrontAction(editor));
+        pb.add(createSendToBackAction(editor));
         pb.addSeparator();
         pb.add(new CutAction());
         pb.add(new CopyAction());

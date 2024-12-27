@@ -39,6 +39,9 @@ import org.jhotdraw.samples.svg.figures.SVGTextFigure;
 import org.jhotdraw.undo.UndoRedoManager;
 import org.jhotdraw.util.*;
 
+import static org.jhotdraw.gui.action.ButtonFactory.createBringToFrontAction;
+import static org.jhotdraw.gui.action.ButtonFactory.createSendToBackAction;
+
 /**
  * ODGDrawingPanel.
  *
@@ -72,8 +75,8 @@ public class ODGDrawingPanel extends JPanel {
         pb.add(new GroupAction(editor));
         pb.add(new UngroupAction(editor));
         pb.addSeparator();
-        pb.add(new BringToFrontAction(editor));
-        pb.add(new SendToBackAction(editor));
+        pb.add(createBringToFrontAction(editor));
+        pb.add(createSendToBackAction(editor));
         pb.addSeparator();
         pb.add(new CutAction());
         pb.add(new CopyAction());
@@ -147,8 +150,8 @@ public class ODGDrawingPanel extends JPanel {
         a.add(new CombineAction(editor));
         a.add(new SplitAction(editor));
         a.add(null); // separator
-        a.add(new BringToFrontAction(editor));
-        a.add(new SendToBackAction(editor));
+        a.add(createBringToFrontAction(editor));
+        a.add(createSendToBackAction(editor));
         return a;
     }
 

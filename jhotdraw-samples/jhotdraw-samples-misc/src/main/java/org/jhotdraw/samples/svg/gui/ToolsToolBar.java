@@ -17,6 +17,9 @@ import org.jhotdraw.action.edit.DuplicateAction;
 import org.jhotdraw.draw.AttributeKey;
 import org.jhotdraw.draw.AttributeKeys;
 import static org.jhotdraw.draw.AttributeKeys.PATH_CLOSED;
+import static org.jhotdraw.gui.action.ButtonFactory.createBringToFrontAction;
+import static org.jhotdraw.gui.action.ButtonFactory.createSendToBackAction;
+
 import org.jhotdraw.draw.DrawingEditor;
 import org.jhotdraw.draw.DrawingView;
 import org.jhotdraw.draw.action.*;
@@ -186,9 +189,9 @@ public class ToolsToolBar extends AbstractToolBar {
         list.add(a = new SplitAction(editor));
         disposables.add(a);
         list.add(null); // separator
-        list.add(a = new BringToFrontAction(editor));
+        list.add(a = (AbstractSelectedAction) createBringToFrontAction(editor));
         disposables.add(a);
-        list.add(a = new SendToBackAction(editor));
+        list.add(a = (AbstractSelectedAction) createSendToBackAction(editor));
         disposables.add(a);
         return list;
     }
