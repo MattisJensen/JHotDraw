@@ -7,14 +7,7 @@
  */
 package org.jhotdraw.draw.figure;
 
-import java.awt.*;
-import java.awt.font.*;
-import java.awt.geom.*;
-import java.io.*;
-import java.text.*;
-import java.util.*;
 import org.jhotdraw.draw.AttributeKeys;
-import static org.jhotdraw.draw.AttributeKeys.*;
 import org.jhotdraw.draw.handle.FontSizeHandle;
 import org.jhotdraw.draw.handle.Handle;
 import org.jhotdraw.draw.handle.TextOverflowHandle;
@@ -22,9 +15,25 @@ import org.jhotdraw.draw.tool.TextAreaEditingTool;
 import org.jhotdraw.draw.tool.Tool;
 import org.jhotdraw.geom.Dimension2DDouble;
 import org.jhotdraw.geom.Insets2D;
-import org.jhotdraw.util.*;
+import org.jhotdraw.util.ResourceBundleUtil;
 import org.jhotdraw.xml.DOMInput;
 import org.jhotdraw.xml.DOMOutput;
+
+import java.awt.*;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import static org.jhotdraw.draw.AttributeKeys.*;
 
 /**
  * A {@code TextHolderFigure} which holds multiple lines of text in a
@@ -132,20 +141,20 @@ public class TextAreaFigure extends AbstractAttributedDecoratedFigure implements
      * Draws or measures a paragraph of text at the specified y location and
      * the bounds of the paragraph.
      *
-     * @param g Graphics object. This parameter is null, if we want to
-     * measure the size of the paragraph.
-     * @param styledText the text of the paragraph.
-     * @param verticalPos the top bound of the paragraph
+     * @param g              Graphics object. This parameter is null, if we want to
+     *                       measure the size of the paragraph.
+     * @param styledText     the text of the paragraph.
+     * @param verticalPos    the top bound of the paragraph
      * @param maxVerticalPos the bottom bound of the paragraph
-     * @param leftMargin the left bound of the paragraph
-     * @param rightMargin the right bound of the paragraph
-     * @param tabStops an array with tab stops
-     * @param tabCount the number of entries in tabStops which contain actual
-     * values
+     * @param leftMargin     the left bound of the paragraph
+     * @param rightMargin    the right bound of the paragraph
+     * @param tabStops       an array with tab stops
+     * @param tabCount       the number of entries in tabStops which contain actual
+     *                       values
      * @return Returns the actual bounds of the paragraph.
      */
     private Rectangle2D.Double drawParagraph(Graphics2D g, AttributedCharacterIterator styledText,
-            float verticalPos, float maxVerticalPos, float leftMargin, float rightMargin, float[] tabStops, int tabCount) {
+                                             float verticalPos, float maxVerticalPos, float leftMargin, float rightMargin, float[] tabStops, int tabCount) {
         // This method is based on the code sample given
         // in the class comment of java.awt.font.LineBreakMeasurer,
         // assume styledText is an AttributedCharacterIterator, and the number
@@ -185,8 +194,8 @@ public class TextAreaFigure extends AbstractAttributedDecoratedFigure implements
                 TextLayout layout = null;
                 layout
                         = measurer.nextLayout(wrappingWidth,
-                                tabLocations[currentTab] + 1,
-                                lineContainsText);
+                        tabLocations[currentTab] + 1,
+                        lineContainsText);
                 // layout can be null if lineContainsText is true
                 if (layout != null) {
                     layouts.add(layout);
@@ -307,6 +316,7 @@ public class TextAreaFigure extends AbstractAttributedDecoratedFigure implements
     }
 
     // ATTRIBUTES
+
     /**
      * Gets the text shown by the text figure.
      */
@@ -464,16 +474,7 @@ public class TextAreaFigure extends AbstractAttributedDecoratedFigure implements
         return isTextOverflow;
     }
 
-    /**
-     * Returns the preferred text size of the TextAreaFigure.
-     * <p>
-     * If you want to use this method to determine the bounds of the TextAreaFigure,
-     * you need to add the insets of the TextAreaFigure to the size.
-     *
-     * @param maxWidth the maximal width to use. Specify Double.MAX_VALUE
-     * if you want the width to be unlimited.
-     * @return width and height needed to lay out the text.
-     */
+
     public Dimension2DDouble getPreferredTextSize(double maxWidth) {
         Rectangle2D.Double textRect = new Rectangle2D.Double();
         if (getText() != null) {
@@ -484,22 +485,14 @@ public class TextAreaFigure extends AbstractAttributedDecoratedFigure implements
             float verticalPos = 0;
             float maxVerticalPos = Float.MAX_VALUE;
             if (leftMargin < rightMargin) {
-                float tabWidth = (float) (getTabSize() * font.getStringBounds("m", getFontRenderContext()).getWidth());
-                float[] tabStops = new float[(int) (textRect.width / tabWidth)];
-                for (int i = 0; i < tabStops.length; i++) {
-                    tabStops[i] = (float) (textRect.x + (int) (tabWidth * (i + 1)));
-                }
-                String[] paragraphs = getText().split("\n"); //Strings.split(getText(), '\n');
-                for (int i = 0; i < paragraphs.length; i++) {
-                    if (paragraphs[i].length() == 0) {
-                        paragraphs[i] = " ";
+                float[] tabStops = calculateTabStops(font, textRect.width);
+                String[] paragraphs = getText().split("\n");
+                for (String paragraph : paragraphs) {
+                    if (paragraph.length() == 0) {
+                        paragraph = " ";
                     }
-                    AttributedString as = new AttributedString(paragraphs[i]);
-                    as.addAttribute(TextAttribute.FONT, font);
-                    if (isUnderlined) {
-                        as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_ONE_PIXEL);
-                    }
-                    int tabCount = paragraphs[i].split("\t").length - 1;
+                    AttributedString as = createAttributedString(paragraph, font, isUnderlined);
+                    int tabCount = paragraph.split("\t").length - 1;
                     Rectangle2D.Double paragraphBounds = drawParagraph(null, as.getIterator(), verticalPos, maxVerticalPos, leftMargin, rightMargin, tabStops, tabCount);
                     verticalPos = (float) (paragraphBounds.y + paragraphBounds.height);
                     textRect.add(paragraphBounds);
@@ -507,5 +500,23 @@ public class TextAreaFigure extends AbstractAttributedDecoratedFigure implements
             }
         }
         return new Dimension2DDouble(-Math.min(textRect.x, 0) + textRect.width, -Math.min(textRect.y, 0) + textRect.height);
+    }
+
+    private float[] calculateTabStops(Font font, double textRectWidth) {
+        float tabWidth = (float) (getTabSize() * font.getStringBounds("m", getFontRenderContext()).getWidth());
+        float[] tabStops = new float[(int) (textRectWidth / tabWidth)];
+        for (int i = 0; i < tabStops.length; i++) {
+            tabStops[i] = (float) (tabWidth * (i + 1));
+        }
+        return tabStops;
+    }
+
+    private AttributedString createAttributedString(String text, Font font, boolean isUnderlined) {
+        AttributedString as = new AttributedString(text);
+        as.addAttribute(TextAttribute.FONT, font);
+        if (isUnderlined) {
+            as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_ONE_PIXEL);
+        }
+        return as;
     }
 }
