@@ -1,75 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.jhotdraw</groupId>
-	<artifactId>jhotdraw</artifactId>
-	<version>9.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<organization>
-		<name>JHotDraw</name>
-	</organization>
-	<repositories>
-		<repository>
-			<id>github</id>
-			<name>GitHub external Packages</name>
-			<url>https://maven.pkg.github.com/sweat-tek/MavenRepository</url>
-		</repository>
-	</repositories>
-	<licenses>
-		<license>
-			<name>GNU Library or Lesser General Public License (LGPL) V2.1</name>
-			<url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
-		</license>
-		<license>
-			<name>Creative Commons Attribution 2.5 License</name>
-			<url>http://creativecommons.org/licenses/by/2.5/</url>
-		</license>
-	</licenses>
-	<developers>
-		<developer>
-			<name>Tobias Warneke</name>
-			<email>t.warneke@gmx.net</email>
-		</developer>
-	</developers>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-	<description>This is a fork of jhotdraw from http://sourceforge.net/projects/jhotdraw</description>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.1.1</version>
-				<configuration>
-					<failOnWarnings>false</failOnWarnings>
-					<failOnError>false</failOnError>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-					<!-- <compilerArgument>-Xlint:unchecked</compilerArgument> -->
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<modules>
-		<module>jhotdraw-core</module>
-		<module>jhotdraw-samples</module>
-		<module>jhotdraw-xml</module>
-		<module>jhotdraw-api</module>
-		<module>jhotdraw-utils</module>
-	 <module>jhotdraw-gui</module>
-	 <module>jhotdraw-app</module>
-	 <module>jhotdraw-datatransfer</module>
-	 <module>jhotdraw-actions</module>
-	</modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.jhotdraw</groupId>
+    <artifactId>jhotdraw</artifactId>
+    <version>9.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <organization>
+        <name>JHotDraw</name>
+    </organization>
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub external Packages</name>
+            <url>https://maven.pkg.github.com/sweat-tek/MavenRepository</url>
+        </repository>
+    </repositories>
+    <licenses>
+        <license>
+            <name>GNU Library or Lesser General Public License (LGPL) V2.1</name>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+        </license>
+        <license>
+            <name>Creative Commons Attribution 2.5 License</name>
+            <url>http://creativecommons.org/licenses/by/2.5/</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Tobias Warneke</name>
+            <email>t.warneke@gmx.net</email>
+        </developer>
+    </developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <description>This is a fork of jhotdraw from http://sourceforge.net/projects/jhotdraw</description>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <failOnWarnings>false</failOnWarnings>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <!-- <compilerArgument>-Xlint:unchecked</compilerArgument> -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <modules>
+        <module>jhotdraw-core</module>
+        <module>jhotdraw-samples</module>
+        <module>jhotdraw-xml</module>
+        <module>jhotdraw-api</module>
+        <module>jhotdraw-utils</module>
+        <module>jhotdraw-gui</module>
+        <module>jhotdraw-app</module>
+        <module>jhotdraw-datatransfer</module>
+        <module>jhotdraw-actions</module>
+    </modules>
 </project>

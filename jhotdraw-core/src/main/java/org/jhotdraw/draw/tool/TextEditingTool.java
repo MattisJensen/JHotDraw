@@ -8,10 +8,12 @@
 package org.jhotdraw.draw.tool;
 
 import org.jhotdraw.draw.figure.TextHolderFigure;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.UndoableEdit;
+
 import org.jhotdraw.draw.*;
 import org.jhotdraw.draw.text.*;
 import org.jhotdraw.util.ResourceBundleUtil;
@@ -89,6 +91,8 @@ public class TextEditingTool extends AbstractTool implements ActionListener {
 
     @Override
     public void mouseReleased(MouseEvent evt) {
+        // This method is intentionally left empty as the TextEditingTool does not require any action on mouse release.
+        // If needed, this can be implemented in the future to handle specific actions on mouse release.
     }
 
     protected void endEdit() {
