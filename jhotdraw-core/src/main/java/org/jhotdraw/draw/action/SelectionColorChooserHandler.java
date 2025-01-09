@@ -1,19 +1,19 @@
 /**
- * @(#)SelectionColorChooserHandler.java
- *
- * Copyright (c) 2010 The authors and contributors of JHotDraw.
+ * @(#)SelectionColorChooserHandler.java Copyright (c) 2010 The authors and contributors of JHotDraw.
  * You may not use, copy or modify this file, except in compliance with the
  * accompanying license terms.
  */
 package org.jhotdraw.draw.action;
 
 import org.jhotdraw.draw.figure.Figure;
+
 import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.undo.*;
+
 import org.jhotdraw.draw.*;
 
 /**
@@ -52,6 +52,9 @@ public class SelectionColorChooserHandler extends AbstractSelectedAction
     protected void applySelectedColorToFigures() {
         final ArrayList<Figure> selectedFigures = new ArrayList<>(getView().getSelectedFigures());
         final ArrayList<Object> restoreData = new ArrayList<>(selectedFigures.size());
+
+        assert !selectedFigures.isEmpty() : "There should always be selected figures";
+
         Color selectedColor = colorChooser.getColor();
         if (selectedColor != null && selectedColor.getAlpha() == 0) {
             selectedColor = null;
